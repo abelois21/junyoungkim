@@ -1,0 +1,31 @@
+undefined reference to ~ 오류 분석하기
+=====================================
+	
+1. name conflict가 발생했을 때
+------------------------------
+### 해당하는 심볼이 존재하지 않거나, 매칭되지 않는 경우 발생
+	
+# 분석하기
+	
+### nm - GNU Development Tool로 오브젝트 파일의 심볼을 나열
+symbol의 value와 type을 보여줌
+	
+문제가 발생한 파일 - problem.cpp
+	
+	gcc -c -o nm_test.o problem.cpp
+	nm -C nm_test.o > symbol_table.txt
+	  
+* (gnu binutil nm의 경우) -C 옵션은 c++의 name mangling 을 우리가 알기 쉽게 번역
+(뒤에 붙이는 c++filt 과 같은 역할)
+	
+이후 symbol_table.txt 에서 해당하는 오류의 심볼을 확인
+	
+2. 라이브러리의 링크를 제대로 수행하지 못했을 때
+---------------------------------------------
+### gcc에 나열한 라이브러리의 순서 문제
+	
+a.cpp가 util에 있는 함수를 이용할 경우 
+  gcc -lutil a.c => X
+  gcc a.c -lutil => O
+	  
+### 마찬가지로 nm을 통해 symbol이 지정한 라이브러리에 포함되어 있는지 확인
