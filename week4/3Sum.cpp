@@ -120,8 +120,23 @@ int main(int argc, char** argv) {
     cout << "총 " << (double)(clock() - start)/1000000 << "마이크로초 소모\n";
 
     cout << endl;
+    cout << "combination을 적용하지 않았을 때\n";
     start = clock();
     cout << threeSumMulti2(arr, target) << endl;
+    cout << "총 " << (double)(clock() - start)/1000000 << "마이크로초 소모\n";
+
+    vector<int> arr2 = vector<int>(1000, 0);
+    target = 0;
+    cout << endl << endl;
+
+    start = clock();
+    cout << threeSumMulti(arr2, target) << endl;
+    cout << "총 " << (double)(clock() - start)/1000000 << "마이크로초 소모\n";
+
+    cout << endl;
+    cout << "combination을 적용하지 않았을 때\n";
+    start = clock();
+    cout << threeSumMulti2(arr2, target) << endl;
     cout << "총 " << (double)(clock() - start)/1000000 << "마이크로초 소모\n";
 
     return 0;
