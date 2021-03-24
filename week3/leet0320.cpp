@@ -10,7 +10,7 @@ bool canVisitAllRooms(vector<vector<int>>& rooms) {
 
     waits.push(0);
     um[0] = 1;
-    while(waits.empty()) {
+    while(!waits.empty()) {
 	room = waits.front();
 	waits.pop();
 
