@@ -1,0 +1,15 @@
+leetcode 3Sum with Multiplicity 방법에 따른 속도 차이
+
+1. 세트 수 20 일 때
+
+inline된 combination 적용 -> 6.6e-05
+    그냥 combination 적용 -> 7.2e-05
+       combination 미적용 -> 8e-06   
+
+2. 세트 수 1000 일 때
+
+inline된 combination 적용 -> 0.000328
+    그냥 combination 적용 -> 0.00033
+       combination 미적용 -> 1.10127
+
+* 단위 micro second
