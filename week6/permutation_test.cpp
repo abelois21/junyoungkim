@@ -1,16 +1,37 @@
 #include <iostream>
 #include <algorithm>
+#include <time.h>
 using namespace std;
 
 int main(int argc, char** argv) {
-//    int* cbn_code = new int(6);
-    int cbn_code[6];
-    for(int i = 0 ; i < 6 ; i++) cbn_code[i] = 0;
-    cbn_code[5] = 1; cbn_code[4] = 1;
+    int cbn_code[15], tmp = 0;
+    for(int i = 0 ; i < 15 ; i++) cbn_code[i] = 0;
+    cbn_code[14] = 1; cbn_code[13] = 1; cbn_code[12] = 1;
 
+    clock_t start = clock();
     do {
-	cout << cbn_code[0] << " " << cbn_code[1] << " " << cbn_code[2] << " " << cbn_code[3] << " " 
-	    << cbn_code[4] << " " << cbn_code[5] << endl;
+//	for(int i = 0 ; i < 15 ; i++) {
+//	    tmp += cbn_code[i];
+//	}
+	tmp = 0;
     } while(next_permutation(cbn_code, cbn_code+sizeof(cbn_code)/sizeof(cbn_code[0])));
+
+    cout << (double)(clock() - start) << "us" << endl;
+
+    start = clock();
+    for(int i = 0 ; i < 13 ; i++) {
+	tmp += i;
+	for(int j = i+1 ; j < 14 ; j++) {
+	    tmp += j;
+	    for(int k = j+1 ; k < 15 ; k++) {
+		tmp += k;
+		tmp -= k;
+	    }
+	    tmp -= j;
+	}
+	tmp -= i;
+    }
+
+    cout << (double)(clock() - start) << "us" << endl;
     return 0;
 }
