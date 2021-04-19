@@ -7,21 +7,18 @@
 #include <time.h>
 using namespace std;
 
-int n, m;
+int n, m, max_area, g_visits;
 int whole_space, fixed_wall;
 vector<pair<int, int>> virus;
 const int di[4] = { -1, 0, 1, 0 };
 const int dj[4] = { 0, 1, 0, -1 };
 
 inline string pair2Str(const pair<int, int>& p) {
-//    string str;
-//    str = to_string(p.first) + "#" + to_string(p.second);
-//    return str;
     return to_string(p.first) + "#" + to_string(p.second);
 } 
 
-int safeSpaces(const vector<vector<int>>& v, const vector<pair<int, int>>& selected_wall) {
-    int row, col;
+void safeSpaces(const vector<vector<int>>& v, const vector<pair<int, int>>& selected_wall) {
+    int row, col, tmp;
     queue<pair<int, int>> waits;
     unordered_map<string, bool> isVisited;
     
@@ -38,7 +35,8 @@ int safeSpaces(const vector<vector<int>>& v, const vector<pair<int, int>>& selec
         col = waits.front().second;
         waits.pop();
         isVisited[pair2Str(pair<int, int>(row, col))] = 1;
-        
+	if(g_visits == isVisited.size()) return;	// have no potential
+     
         row -= 1;
         if(v[row][col] != 1 && !isVisited[pair2Str(pair<int, int>(row, col))]) 
             waits.push(pair<int, int>(row, col));
@@ -51,9 +49,32 @@ int safeSpaces(const vector<vector<int>>& v, const vector<pair<int, int>>& selec
             waits.push(pair<int, int>(row, col));
         col += 2;
         if(v[row][col] != 1 && !isVisited[pair2Str(pair<int, int>(row, col))]) 
-            waits.push(pair<int, int>(row, col));    }
-    
-    return whole_space - fixed_wall - isVisited.size();
+            waits.push(pair<int, int>(row, col));    
+    }
+/*
+        row -= 1;
+        if((row != 0) && !isVisited[pair2Str(pair<int, int>(row, col))]) 
+            waits.push(pair<int, int>(row, col));
+        row += 2;
+        if((row != n+1) && !isVisited[pair2Str(pair<int, int>(row, col))]) 
+            waits.push(pair<int, int>(row, col));
+        row -= 1;
+        col -= 1;
+        if((col != 0) && !isVisited[pair2Str(pair<int, int>(row, col))]) 
+            waits.push(pair<int, int>(row, col));
+        col += 2;
+        if((col != m+1) && !isVisited[pair2Str(pair<int, int>(row, col))]) 
+            waits.push(pair<int, int>(row, col));    
+    }
+*/
+    tmp = whole_space - fixed_wall - isVisited.size();
+    if(max_area < tmp) {
+	max_area = tmp;
+	g_visits = isVisited.size();
+    }
+
+    return;
+//    return whole_space - fixed_wall - isVisited.size();
 }
 
 int main(int argc, char** argv) {
@@ -65,6 +86,7 @@ int main(int argc, char** argv) {
     
     cin >> n >> m;
     whole_space = n * m;
+    g_visits = whole_space;
     board = vector<vector<int>>(n+2, vector<int>(m+2, 0));
     
     for(int i = 1 ; i <= n ; i++) { 
@@ -90,14 +112,15 @@ int main(int argc, char** argv) {
         board[i][0]   = 1;
         board[i][m+1] = 1;
     }
-    
+/*    
     // 조합을 위한 세팅
     cbn_code = vector<int>(empty_spaces, 0);
     for(int i = empty_spaces - 1 ; i >= empty_spaces -  3 ; i--) 
         cbn_code[i] = 1;
-/*    
+
+    vector<pair<int, int>> selected_wall(3, pair<int, int>(0, 0));
     do {
-        vector<pair<int, int>> selected_wall(3, pair<int, int>(0, 0));
+//        vector<pair<int, int>> selected_wall(3, pair<int, int>(0, 0));
         int cnt = 0;
         
         for(int i = 0 ; i < empty_spaces ; i++) {
@@ -119,13 +142,12 @@ int main(int argc, char** argv) {
 	    selected_wall[1] = spaces[j];
 	    for(int k = j+1 ; k < empty_spaces ; k++) {
 		selected_wall[2] = spaces[k];
-		tmp = safeSpaces(board, selected_wall);
-		if(tmp > max) max = tmp;
+		safeSpaces(board, selected_wall);
 	    }
 	}
     }
     
-    cout << max << endl;
+    cout << max_area << endl;
     cout << "time consuming: " << (double)(clock() - start) << "us \n";
     
     return 0;
