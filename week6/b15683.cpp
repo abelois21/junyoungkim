@@ -6,11 +6,11 @@ vector<pair<int, int>> cctv_loc;
 vector<int> cctv_type;
 int g_area;
 
-vector<vector<int>> added_mm(const vector<vector<int>>& mm, const vector<pair<int, int>>* v1, 
-                             const vector<pair<int, int>>* v2 = NULL, const vector<pair<int, int>>* v3 = NULL,
-                             const vector<pair<int, int>>* v4 = NULL) {
+vector<vector<int>> added_mm(vector<vector<int>>& mm, vector<pair<int, int>>* v1, 
+                             vector<pair<int, int>>* v2 = NULL, vector<pair<int, int>>* v3 = NULL,
+                             vector<pair<int, int>>* v4 = NULL) {
     vector<vector<int>> cv(mm.begin(), mm.end());
-    
+/*
     for(const auto& e : *v1) 
             cv[e.first][e.second] = -1;
     
@@ -25,6 +25,24 @@ vector<vector<int>> added_mm(const vector<vector<int>>& mm, const vector<pair<in
             if(v4 != NULL) {
                 for(const auto& e : *v4) 
                     cv[e.first][e.second] = -1;
+            }
+        }
+    }
+*/    
+    for(auto it = v1->begin() ; it != v1->end() ; it++) 
+            cv[it->first][it->second] = -1;
+    
+    if(v2 != NULL) {
+        for(auto it = v2->begin() ; it != v2->end() ; it++) 
+            cv[it->first][it->second] = -1;
+        
+        if(v3 != NULL) {
+            for(auto it = v3->begin() ; it != v3->end() ; it++) 
+                cv[it->first][it->second] = -1;
+            
+            if(v4 != NULL) {
+                for(auto it = v4->begin() ; it != v4->end() ; it++) 
+                    cv[it->first][it->second] = -1;
             }
         }
     }
@@ -114,9 +132,18 @@ int main(int argc, char** argv) {
             }
         }
     }
+
+    if(cctv_loc.size() == 0) {
+	tmp = 0;
+	for(int i = 0 ; i < n ; i++)
+	    for(int j = 0 ; j < m ; j++)
+		if(room[i][j] == 0) tmp += 1;
+	g_area = tmp;
+    } else {
+        dfs(room, 0);
+    }
     
-    dfs(room, 0);
-    cout << g_area;
+    cout << g_area << endl;
     
     return 0;
 }
