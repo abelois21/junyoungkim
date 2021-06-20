@@ -80,30 +80,68 @@ int main(int argc, char** argv) {
 
 // quick sort for list
 void qSortList(struct ListNode** head, int(*comp)(int, int)){
-    struct ListNode** tail;
-    while(!(*tail)->next) (*tail) = (*tail)->next;
+    struct ListNode *temp, **tail;
+    temp = *head;
+    tail = &temp;
+
+    while((*tail)->next) *tail = (*tail)->next;
+
     qSortPart(head, tail, comp);
 }
 
-void qsPartition(struct ListNode* head, struct ListNode* tail, struct ListNode** nHead, struct ListNode** nTail,
-	int(*comp)(int, int)) {
-    if(head == tail) return;
+// sort from leftmost to rightmost-1 
+void qsPartition(struct ListNode** head, struct ListNode** tail, int(*comp)(int, int)) {
+    struct ListNode *cur, *pivot = tail, *temp;
 
-    struct ListNode *temp, *pivot = tail, *prev;
+    while(!(comp((*head)->val, pivot->val))) {
+	temp = *head;
+	*head = (*head)->next;
+	temp->next = pivot->next;
+	pivot->next = temp;
 
-    if(head->val > pivot->val) {
-	
-    }
-    while(temp != pivot) {
-	if(temp->val > pivot->val) {
-		
-	}
-	temp = temp->next;
+	if(*head == pivot) return;	// all of the elements are assigned to rightside of pivot
     }
 
-    qSortPart(head, pivot, comp);
-    qSortPart(pivot->next, tail, comp);
+    cur = (*head)->next;
+    while(!(comp(cur->val, pivot->val))) {
+	temp = cur;
+	cur = cur->next;
+	temp->next = pivot->next;
+	pivot->next = temp;
+
+	if(!cur) break;
+    }
+
+    while(temp->next) temp = temp->next;
+    *tail = temp;
+
 }
+
+void qSortPart(struct ListNode** head, struct ListNode** tail, int(*comp)(int, int)) {
+    struct ListNode *temp, *pivot = *tail;
+    qsPartition(head, tail);				// tail is pivot
+
+    if(!(*head == pivot || (*head)->next == pivot)) {	// List has only one element
+	temp = (*head)->next;
+	while(temp->next != pivot) {
+	    temp = temp->next;
+	}
+
+	temp->next = NULL;
+    	qSortPart(head, &temp, comp);
+    	temp->next = pivot;
+    }
+
+    if(!(pivot == *tail || pivot->next == *tail)) {
+        temp = pivot->next;
+
+    	pivot->next = NULL;
+    	qSortPart(&temp, tail, comp);
+        pivot->next = temp;
+
+    }
+}
+
 
 // merge sort for list
 struct ListNode* mSortList(struct ListNode* head, int(*comp)(int, int)){
