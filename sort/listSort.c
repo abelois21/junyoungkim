@@ -145,8 +145,53 @@ void qSortPart(struct ListNode** head, struct ListNode** tail, int(*comp)(int, i
 
 // merge sort for list
 struct ListNode* mSortList(struct ListNode* head, int(*comp)(int, int)){
-    ;
-}
+    if(head->next == NULL) head;			// only has one element
+
+    struct ListNode *m1, *m2, *temp, *nHead, *temp2;
+    unsigned char flag = 0;
+
+    // divide to 2 parts
+    nHead = temp = head;
+    while(head) {
+	head = head->next;
+	if(flag) 
+	    temp = temp->next;
+	
+	flag = 1 - flag;
+    }
+    temp2 = temp;
+    temp  = temp->next;
+    temp2->next = NULL;
+
+    m1 = mSortList(nHead, comp);
+    m2 = mSortList(temp, comp);
+
+    // merge parts
+    if(!comp(m1->val, m2->val)) {
+	nHead = m1;
+	m1 = m1->next;
+    } else {
+	nHead = m2;
+	m2 = m2->next;
+    }
+
+    temp = nHead;
+    while(m1 != NULL &&  m2 != NULL) {
+	if(!comp(m1->val, m2->val)) {
+	    temp->next = m1;
+	    temp = temp->next;
+	    m1 = m1->next;
+	}
+	else {
+	    temp->next = m2;
+	    temp = temp->next;
+	    m2 = m2->next;
+	}
+    }
+    temp->next = (m1 == NULL) ? m2 : m1;
+
+    return nHead;
+} 
 
 // heap sort for list
 struct ListNode* hSortList(struct ListNode* head, int(*comp)(int, int)){ 
